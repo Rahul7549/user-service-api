@@ -1,5 +1,6 @@
+
 services:
-  - name: express-app
+  - name: user-service-api
     env: .env
     buildCommand: npm install
     startCommand: npm start
