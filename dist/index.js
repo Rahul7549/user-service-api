@@ -27,11 +27,11 @@ var port = 5000;
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-sequelize.sync({
-  force: true
-}).then(function () {
-  console.log('Database and tables created!');
-});
+
+// sequelize.sync({ force: true }).then(() => {
+//     console.log('Database and tables created!');
+// });
+
 app.post('/users', /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
     var name, user;

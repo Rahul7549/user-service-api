@@ -22,7 +22,7 @@ router.post('/',[
         name: req.body.name,
         city: req.body.city,
         email: req.body.email,
-        phone:req.body.email,
+        phone:req.body.phone,
         zohouser:false
       });
   

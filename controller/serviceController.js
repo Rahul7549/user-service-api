@@ -59,14 +59,31 @@ router.post('/active/:serviceId',async(req,res)=>{
         
         const service= await Service.findByPk(req.params.serviceId);
         // service.title='active';
-        await ServiceRequest.create({
+        const requestedServicecreated=await ServiceRequest.create({
+            title:service.title,
+            description:service.description,
+            status:'pending'
+        })
+
+
+        setTimeout(async()=>{
+            requestedServicecreated.status
+         await ServiceRequest.update({
             title:service.title,
             description:service.description,
             status:'active'
-        })
+         },{
+            where:{
+                id:requestedServicecreated.id
+            }
+         })
 
-         const requestedService=await ServiceRequest.findAll();
-         res.json(requestedService)
+         console.log('status updated*********************************###########');
+
+        },30000)
+
+        const requestedService=await ServiceRequest.findAll();
+        res.json(requestedService)
 
     } catch (error) {
         console.log('Intenal server Error');

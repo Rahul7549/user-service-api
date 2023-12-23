@@ -20,9 +20,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
-sequelize.sync({ force: true }).then(() => {
-    console.log('Database and tables created!');
-});
+// sequelize.sync({ force: true }).then(() => {
+//     console.log('Database and tables created!');
+// });
 
 
 
