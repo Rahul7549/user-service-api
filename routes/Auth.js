@@ -37,7 +37,10 @@ router.post('/zoho-user', async (req, res) => {
         const zohoUser = await axios.get(zohoUrl, config)
         if (!zohoUser.data || Object.keys(zohoUser.data).length === 0) {
             try {
-                const user = await User.findOne({ where: { email: req.query.email } })
+                const LocalUser = await User.findOne({ where: { email: req.query.email } })
+                 let user = {
+                    users: LocalUser
+                }
                 return res.json(user)
             } catch (error) {
 
