@@ -38,8 +38,10 @@ router.post('/zoho-user', async (req, res) => {
         if (!zohoUser.data || Object.keys(zohoUser.data).length === 0) {
             try {
                 const LocalUser = await User.findOne({ where: { email: req.query.email } })
+                let users=[]
+                users.push(LocalUser)
                  let user = {
-                    users: LocalUser
+                    users: users
                 }
                 return res.json(user)
             } catch (error) {
