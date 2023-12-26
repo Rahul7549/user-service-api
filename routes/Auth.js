@@ -49,15 +49,6 @@ router.post('/zoho-user', async (req, res) => {
                 res.json('Internal server error')
 
             }
-            // let localUserUrl = `http://localhost:5000/user/${req.query.email}`
-            // const responseLocal = await axios.get(localUserUrl.toString())
-            // let users = []
-            // users.push(responseLocal.data)
-            // let user = {
-            //     users: responseLocal.data
-            // }
-
-            // res.json(user)
         } else {
             console.log('Data received:', zohoUser.data);
         }
