@@ -41,19 +41,16 @@ router.post('/create-user', [
     const zohoUser = await axios.get(zohoUrl, config)
     if (!zohoUser.data || Object.keys(zohoUser.data).length === 0) {
 
-      const LocalUser = await User.findOne({ where: { email: req.body.email } }, '-password')
-      if (LocalUser) {
-        let users = []
-        users.push(LocalUser)
-        let user = {
-          users: users
-        }
-        return res.json({ LocalUser, message: 'Local user already exist' })
+      const user = await User.findOne({ where: { email: req.body.email } })
+      if (user) {
+        await delete user.dataValues.password;
+        return res.json({ user, message: 'Local user already exist' })
+        
       } else {
         const salt = await bcrypt.genSaltSync(10);
         const hasPassword = await bcrypt.hashSync(req.body.password, salt);
 
-        const newUser = await User.create({
+        const user = await User.create({
           name: req.body.name,
           city: req.body.city,
           email: req.body.email,
@@ -61,21 +58,25 @@ router.post('/create-user', [
           zohouser: false,
           password: hasPassword
         });
-        let users = []
-        users.push(newUser)
-        return res.json({ newUser, message: 'Local user created' })
+        // let users = []
+        // users.push(newUser)
+        // let user = {
+        //   users: users
+        // }
+        
+        await delete user.dataValues.password;
+        return res.json({ user, message: 'Local user created' })
 
       }
     } else {
-      const LocalUser = await User.findOne({ where: { email: req.body.email } })
-      if (LocalUser) {
-
-        return res.json({ LocalUser, message: 'Zoho user already exist as local user' })
+      const user = await User.findOne({ where: { email: req.body.email } })
+      if (user) {
+        await delete user.dataValues.password;
+        return res.json({ user, message: 'Zoho user already exist as local user' })
       } else {
         const salt = await bcrypt.genSaltSync(10);
         const hasPassword = await bcrypt.hashSync(req.body.password, salt);
-
-        const newUser = await User.create({
+        const user = await User.create({
           name: req.body.name,
           city: req.body.city,
           email: req.body.email,
@@ -83,12 +84,8 @@ router.post('/create-user', [
           zohouser: true,
           password: hasPassword
         });
-        let users = []
-        users.push(newUser)
-        let user = {
-          users: users
-        }
-        res.json({ newUser, message: 'Zoho user created as local user' })
+        await delete user.dataValues.password;
+        res.json({ user, message: 'Zoho user created as local user' })
       }
 
 
@@ -125,20 +122,22 @@ router.post('/login',
       const zohoUser = await axios.get(zohoUrl, config)
       if (!zohoUser.data || Object.keys(zohoUser.data).length === 0) {
         try {
-          const LocalUser = await User.findOne({ where: { email: req.query.email } })
+          const user = await User.findOne({ where: { email: req.query.email } })
           console.log(req.body.password);
-          const matchedPwd = await bcrypt.compare(req.body.password, LocalUser.password);
+          const matchedPwd = await bcrypt.compare(req.body.password, user.password);
           if (!matchedPwd) {
             return res.status(400).json({ errors: 'please try to login with correct credential' })
           }
-          let users = []
-          console.log("LocalUser ->", LocalUser);
-          await delete LocalUser.dataValues.password;
-          users.push(LocalUser)
-          let user = {
-            users: users
+          // let users = []
+          // console.log("LocalUser ->", LocalUser);
+          if(user){
+            await delete user.dataValues.password;
           }
-          return res.json(user)
+          // users.push(LocalUser)
+          // let user = {
+          //   users: users
+          // }
+          return res.json({user})
         } catch (error) {
 
           res.json('Internal server error')
@@ -146,20 +145,21 @@ router.post('/login',
         }
       } else {
         try {
-          const LocalUser = await User.findOne({ where: { email: req.query.email } })
+          const user = await User.findOne({ where: { email: req.query.email } })
           // const matchedPwd =await bcrypt.compare(req.body.password,LocalUser.password);
           // if (!matchedPwd) {
           //     return res.status(400).json({ errors: 'please try to login with correct credential' })
           //   }
-          let users = []
-          delete delete LocalUser.dataValues.password;
-          users.push(LocalUser)
-          let user = {
-            users: users
+          // let users = []
+          if(user){
+            await delete user.dataValues.password;
           }
-          return res.json(user)
+          // users.push(LocalUser)
+          // let user = {
+          //   users: users
+          // }
+          return res.json({user})
         } catch (error) {
-
           res.json('Internal server error')
 
         }
@@ -240,20 +240,13 @@ router.put('/:userId', [
 
 router.post('/check-zoho-user', async (req, res) => {
   try {
-    const LocalUser = await User.findOne({ where: { email: req.query.email } })
-    if (LocalUser) {
-      await delete LocalUser.dataValues.password;
+    const user = await User.findOne({ where: { email: req.query.email } })
+    if (user) {
+      await delete user.dataValues.password;
     }
-    let users = []
-    users.push(LocalUser)
-    let user = {
-      users: users
-    }
-    if (!LocalUser) {
-      return res.json(user)
-    }
-
-    return res.json(user)
+    
+    res.json({user})
+    
   } catch (error) {
     res.json('Internal server error')
 
