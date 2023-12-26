@@ -7,6 +7,7 @@ const { log } = require("console");
 const User = require("../models/User");
 const { where } = require("sequelize");
 require('dotenv').config();
+const bcrypt = require('bcryptjs')
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 const access_token = '1000.96b97658eb9e76acc28d0413bea4ae94.c1bebb0a82cb910e8abecaa65eab2221'
@@ -15,52 +16,74 @@ const access_token = '1000.96b97658eb9e76acc28d0413bea4ae94.c1bebb0a82cb910e8abe
 
 
 
-router.post('/zoho-user', async (req, res) => {
+// router.post('/zoho-user', async (req, res) => {
 
-    try {
-        let zohoUrl = `http://www.zohoapis.in/crm/v5/users/search`;
-        const authToken = `Zoho-oauthtoken ${process.env.ACCESS_TOKEN}`;
-        const config = {
-            headers: {
-                'Authorization': authToken.toString(),
-                'Content-Type': 'application/json',
-            },
-            params: {
-                'email': req.query.email,
-            },
-            httpsAgent: new https.Agent({
-                rejectUnauthorized: false,
-            })
+//     try {
+//         let zohoUrl = `http://www.zohoapis.in/crm/v5/users/search`;
+//         const authToken = `Zoho-oauthtoken ${process.env.ACCESS_TOKEN}`;
+//         const config = {
+//             headers: {
+//                 'Authorization': authToken.toString(),
+//                 'Content-Type': 'application/json',
+//             },
+//             params: {
+//                 'email': req.query.email,
+//             },
+//             httpsAgent: new https.Agent({
+//                 rejectUnauthorized: false,
+//             })
 
-        };
+//         };
 
-        const zohoUser = await axios.get(zohoUrl, config)
-        if (!zohoUser.data || Object.keys(zohoUser.data).length === 0) {
-            try {
-                const LocalUser = await User.findOne({ where: { email: req.query.email } })
-                let users=[]
-                users.push(LocalUser)
-                 let user = {
-                    users: users
-                }
-                return res.json(user)
-            } catch (error) {
+//         const zohoUser = await axios.get(zohoUrl, config)
+//         if (!zohoUser.data || Object.keys(zohoUser.data).length === 0) {
+//             try {
+//                 const LocalUser = await User.findOne({ where: { email: req.query.email } })
+//                 console.log( req.body.password);
+//                 const matchedPwd =bcrypt.compare(LocalUser.password, req.body.password);
+//                 if (!matchedPwd) {
+//                     return res.status(400).json({ errors: 'please try to login with correct credential' })
+//                   }
+//                 let users=[]
+//                 users.push(LocalUser)
+//                  let user = {
+//                     users: users
+//                 }
+//                 return res.json(user)
+//             } catch (error) {
 
-                res.json('Internal server error')
+//                 res.json('Internal server error')
 
-            }
-        } else {
-            console.log('Data received:', zohoUser.data);
-        }
-        res.json(zohoUser.data)
+//             }
+//         } else {
+//             try {
+//                 const LocalUser = await User.findOne({ where: { email: req.query.email } })
+//                 const matchedPwd = bcrypt.compare(LocalUser.password, req.body.password);
+//                 if (!matchedPwd) {
+//                     return res.status(400).json({ errors: 'please try to login with correct credential' })
+//                   }
+//                 let users=[]
+//                 users.push(LocalUser)
+//                  let user = {
+//                     users: users
+//                 }
+//                 return res.json(user)
+//             } catch (error) {
+
+//                 res.json('Internal server error')
+
+//             }
+//             console.log('Data received:', zohoUser.data);
+//         }
+//         // res.json(zohoUser.data)
 
 
-    } catch (error) {
-        res.json('Internal server error')
-    }
+//     } catch (error) {
+//         res.json('Internal server error')
+//     }
 
 
-});
+// });
 
 
 
@@ -75,10 +98,7 @@ router.post('/zoho-token', async (req, res) => {
     })
 
         .then(response => {
-            // console.log('fetch the user token');
             process.env.ACCESS_TOKEN = response.data.access_token;
-            // console.log('\n');
-            // console.log('servusw called ',response);
             return res.send(response.data);
         })
         .catch(error => {
@@ -86,25 +106,5 @@ router.post('/zoho-token', async (req, res) => {
             return res.send(error)
         });
 });
-
-
-
-// router.post(
-//     "/refresh-token",
-//     async (req, res) => {
-//     let zohoTokenUrl=`https://accounts.zoho.in/oauth/v2/token?refresh_token=${process.env.REFRESH_TOKEN}&client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&grant_type=${process.env.GRANT_TYPE}`;
-//         const response = await axios.post(
-//             zohoTokenUrl.toString(),
-//           {
-//             headers: {
-//               "Content-Type": "application/x-www-form-urlencoded/json",
-//             },
-//           }
-//         );
-//        return res.send(response.data) 
-//       } 
-
-//   );
-
 
 module.exports = router

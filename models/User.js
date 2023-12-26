@@ -30,29 +30,33 @@
 
 const { DataTypes } = require('sequelize');
 const sequelize = require('../dbConfigration'); // Your Sequelize instance
-const Role=require('./Service')
-const UserRole=require('./ServiceRequest')
+const Role = require('./Service')
+const UserRole = require('./ServiceRequest')
 const User = sequelize.define('User', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  city:{
+  city: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  phone:{
+  phone: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  email:{
+  email: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  zohouser:{
+  zohouser: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-  }
+  }, 
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 
 
