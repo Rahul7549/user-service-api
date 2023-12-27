@@ -13,7 +13,10 @@ const sequelize=new Sequelize('userservice_omv8','rahul','0UBbQMfqN4sbgmkmpDx1bQ
     ssl:{
       require: true,
       rejectUnauthorized:true
-    }
+    },
+    synchronize: {
+      alter: true,
+    },
     },
     pool: {
         max: 10, // Maximum number of connections in the pool

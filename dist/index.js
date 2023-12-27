@@ -11,15 +11,10 @@ var _require = require('console'),
 var app = express();
 var https = require('https');
 var axios = require('axios');
-var _require2 = require('sequelize'),
-  Sequelize = _require2.Sequelize,
-  DataTypes = _require2.DataTypes;
-var _require3 = require('./data/localVariable'),
-  productList = _require3.productList,
-  serviceList = _require3.serviceList;
-var sequelize = require('./dbConfigration'); // Your Sequelize instance
+var sequelize = require('./dbConfigration');
 var User = require('./models/User');
-// const Role = require('./models/');
+var Service = require('./models/Service');
+var ServiceRequest = require('./models/ServiceRequest');
 var bodyParser = require('body-parser');
 app.use(cors());
 app.use(express.json());
@@ -27,6 +22,8 @@ var port = 5000;
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+User.hasMany(ServiceRequest);
+ServiceRequest.belongsTo(User);
 
 // sequelize.sync({ force: true }).then(() => {
 //     console.log('Database and tables created!');

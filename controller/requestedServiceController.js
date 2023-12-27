@@ -13,12 +13,17 @@ const ServiceRequest=require('../models/ServiceRequest');
 
 router.get('/',async(req,res)=>{
 try {
-    const requestedService=await ServiceRequest.findAll();
-    if(requestedService){
-        res.json(requestedService)
+    const userRequestedServices=await User.findOne({
+        where:{
+            email:req.query.email
+        },
+        include:ServiceRequest,
+    });
+    if(userRequestedServices){
+        res.json(userRequestedServices.ServiceRequests)
     }
     else{
-        res.json('No service requested')
+        res.json([])
     }
 } catch (error) {
     

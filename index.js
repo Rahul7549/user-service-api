@@ -4,12 +4,12 @@ const { log } = require('console');
 const app=express();
 const https = require('https');
 const axios = require('axios');
-const { Sequelize, DataTypes } = require('sequelize');
-const {productList,serviceList}=require('./data/localVariable')
 
-const sequelize = require('./dbConfigration'); // Your Sequelize instance
+const sequelize = require('./dbConfigration'); 
 const User = require('./models/User');
-// const Role = require('./models/');
+const Service=require('./models/Service')
+const ServiceRequest=require('./models/ServiceRequest')
+
 const bodyParser = require('body-parser');
 
 app.use(cors());
@@ -18,6 +18,10 @@ const port=5000;
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
+
+
+User.hasMany(ServiceRequest);
+ServiceRequest.belongsTo(User)
 
 
 // sequelize.sync({ force: true }).then(() => {

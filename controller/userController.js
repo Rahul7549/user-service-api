@@ -6,6 +6,8 @@ const axios = require('axios');
 const bcrypt = require('bcryptjs')
 const { body, validationResult } = require('express-validator');
 const router = express.Router()
+const requestedService=require('../models/ServiceRequest')
+const Service=require('../models/Service')
 router.post('/create-user', [
   body('name', 'Name must not be empty').notEmpty(),
   body('city', 'City must not be empty').notEmpty(),
@@ -177,7 +179,9 @@ router.post('/login',
 
 router.get('/', async (req, res) => {
   try {
-    const users = await User.findAll();
+    const users = await User.findAll({
+      include: requestedService
+    });
     res.json(users)
   }
   catch (error) {
@@ -188,7 +192,10 @@ router.get('/', async (req, res) => {
 
 router.get('/:userId', async (req, res) => {
   try {
-    const user = await User.findAll({ where: { email: req.params.userId } })
+    console.log(req.params.userId);
+    const user = await User.findByPk(req.params.userId,
+      {include:requestedService}
+      )
     return res.json(user)
   }
   catch (error) {

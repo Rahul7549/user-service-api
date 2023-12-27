@@ -54,40 +54,54 @@ router.get('/:serviceId',async(req,res)=>{
     }
 })
 
-router.post('/active/:serviceId',async(req,res)=>{
+router.post('/active',async(req,res)=>{
     try {
+        const serviceId=req.query.serviceId;
+        const user=await User.findOne({where:{
+            email:req.query.email
+        }})
+        if(!user){
+            return res.json('user not found')
         
-        const service= await Service.findByPk(req.params.serviceId);
-        // service.title='active';
-        const requestedServicecreated=await ServiceRequest.create({
+        }
+        console.log(user.id,'--->',serviceId);
+        const checkServiceRequested=await ServiceRequest.findOne({
+            where:{
+                UserId:user.id,
+                availableServiceId:serviceId
+            }
+        })
+
+        if(checkServiceRequested){
+            return res.status(400).json('service already requested')
+        }
+        const service= await Service.findByPk(serviceId);
+        const requestedServiceCreated=await ServiceRequest.create({
             title:service.title,
             description:service.description,
-            status:'pending'
+            status:'pending',
+            UserId:user.id,
+            availableServiceId:service.id
         })
 
 
         setTimeout(async()=>{
-            requestedServicecreated.status
          await ServiceRequest.update({
-            title:service.title,
-            description:service.description,
             status:'active'
          },{
             where:{
-                id:requestedServicecreated.id
+                UserId:requestedServiceCreated.UserId,
+                availableServiceId:requestedServiceCreated.availableServiceId
             }
          })
-
-         console.log('status updated*********************************###########');
-
         },30000)
 
         const requestedService=await ServiceRequest.findAll();
         res.json(requestedService)
 
     } catch (error) {
-        console.log('Intenal server Error');
-        res.status(500).json('Intenal server Error')
+        console.log(error);
+        res.status(500).json(error)
     }
 })
 

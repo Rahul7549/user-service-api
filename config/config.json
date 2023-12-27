@@ -1,0 +1,30 @@
+{
+  "development": {
+    "username": "rahul",
+    "password": "0UBbQMfqN4sbgmkmpDx1bQy5DajmYh7w",
+    "database": "userservice_omv8",
+    "host": "dpg-cm2o3ha1hbls73fr0im0-a.oregon-postgres.render.com",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,   
+        "rejectUnauthorized": false 
+      }
+    }
+    
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
