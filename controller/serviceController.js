@@ -85,19 +85,69 @@ router.post('/active',async(req,res)=>{
         })
 
 
-        setTimeout(async()=>{
-         await ServiceRequest.update({
-            status:'active'
-         },{
-            where:{
-                UserId:requestedServiceCreated.UserId,
-                availableServiceId:requestedServiceCreated.availableServiceId
-            }
-         })
-        },30000)
+        // setTimeout(async()=>{
+        //  await ServiceRequest.update({
+        //     status:'active'
+        //  },{
+        //     where:{
+        //         UserId:requestedServiceCreated.UserId,
+        //         availableServiceId:requestedServiceCreated.availableServiceId
+        //     }
+        //  })
+        // },30000)
 
         const requestedService=await ServiceRequest.findAll();
         res.json(requestedService)
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+})
+
+router.post('/approval',async(req,res)=>{
+    try {
+        const serviceId=req.query.serviceId;
+        const userId=req.query.userId;
+        const user=await User.findOne({where:{
+            id:userId
+        }})
+        if(!user){
+            return res.json('Requested user not found')
+        
+        }
+        console.log(user.id,'--->',serviceId);
+        // const checkServiceRequested=await ServiceRequest.findOne({
+        //     where:{
+        //         UserId:userId,
+        //         availableServiceId:serviceId
+        //     }
+        // })
+
+        // if(checkServiceRequested){
+        //     return res.status(400).json('service already requested')
+        // }
+        // const service= await Service.findByPk(serviceId);
+        // const requestedServiceCreated=await ServiceRequest.create({
+        //     title:service.title,
+        //     description:service.description,
+        //     status:'pending',
+        //     UserId:user.id,
+        //     availableServiceId:service.id
+        // })
+
+
+        const updatedService= await ServiceRequest.update({
+            status:'active'
+         },{
+            where:{
+                UserId:userId,
+                availableServiceId:serviceId
+            }
+         })
+
+        // const requestedService=await ServiceRequest.findAll();
+        res.json(updatedService)
 
     } catch (error) {
         console.log(error);
@@ -117,7 +167,6 @@ router.post('/deactive/:serviceId',async(req,res)=>{
 
          const requestedService=await ServiceRequest.findAll();
          res.json(requestedService)
-
     } catch (error) {
         console.log('Intenal server Error');
         res.status(500).json('Intenal server Error')

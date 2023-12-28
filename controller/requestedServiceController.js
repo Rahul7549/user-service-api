@@ -30,4 +30,11 @@ try {
 }
 })
 
+router.get('/all-requested-service', async(req,res)=>{
+    const requestedService=await ServiceRequest.findAll({
+        include:User
+    })
+    res.json(requestedService)
+})
+
 module.exports=router
