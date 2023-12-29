@@ -65,7 +65,7 @@ router.post('/create-user', [
           console.log('*****************',userRole.id);
         }
         // console.log(userRole.id);
-        const user = await User.create({
+        await User.create({
           name: req.body.name,
           city: req.body.city,
           email: req.body.email,
@@ -80,6 +80,8 @@ router.post('/create-user', [
         // let user = {
         //   users: users
         // }
+        const user=await User.findOne({ where: { email: req.body.email },include:UserRole })
+
         
         await delete user.dataValues.password;
         return res.json({ user, message: 'Local user created' })
@@ -104,7 +106,7 @@ router.post('/create-user', [
           console.log('*****************',userRole.id);
         }
 
-        const user = await User.create({
+        await User.create({
           name: req.body.name,
           city: req.body.city,
           email: req.body.email,
@@ -114,6 +116,9 @@ router.post('/create-user', [
           userRoleId:userRole.id
 
         });
+
+        const user=await User.findOne({ where: { email: req.body.email },include:UserRole })
+
         await delete user.dataValues.password;
         res.json({ user, message: 'Zoho user created as local user' })
       }
