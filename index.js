@@ -9,6 +9,7 @@ const sequelize = require('./dbConfigration');
 const User = require('./models/User');
 const Service=require('./models/Service')
 const ServiceRequest=require('./models/ServiceRequest')
+const UserRole=require('./models/UserRole')
 
 const bodyParser = require('body-parser');
 
@@ -21,8 +22,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 User.hasMany(ServiceRequest);
-ServiceRequest.belongsTo(User)
+ServiceRequest.belongsTo(User);
+User.belongsTo(UserRole);
+UserRole.hasMany(User);
 
+// UserRole.hasMany(User, { foreignKey: 'userRole' });
+// User.belongsTo(UserRole, { foreignKey: 'userRole' });
 
 // sequelize.sync({ force: true }).then(() => {
 //     console.log('Database and tables created!');
@@ -87,4 +92,5 @@ app.use('/auth',require('./routes/Auth'))
 app.use('/user',require('./controller/userController'))
 app.use('/service',require('./controller/serviceController'))
 app.use('/requested-service',require('./controller/requestedServiceController'))
+app.use('/user-role',require('./controller/userRoleController'))
 

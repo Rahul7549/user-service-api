@@ -15,6 +15,7 @@ var sequelize = require('./dbConfigration');
 var User = require('./models/User');
 var Service = require('./models/Service');
 var ServiceRequest = require('./models/ServiceRequest');
+var UserRole = require('./models/UserRole');
 var bodyParser = require('body-parser');
 app.use(cors());
 app.use(express.json());
@@ -24,6 +25,11 @@ app.use(bodyParser.urlencoded({
 }));
 User.hasMany(ServiceRequest);
 ServiceRequest.belongsTo(User);
+User.belongsTo(UserRole);
+UserRole.hasMany(User);
+
+// UserRole.hasMany(User, { foreignKey: 'userRole' });
+// User.belongsTo(UserRole, { foreignKey: 'userRole' });
 
 // sequelize.sync({ force: true }).then(() => {
 //     console.log('Database and tables created!');
@@ -125,3 +131,4 @@ app.use('/auth', require('./routes/Auth'));
 app.use('/user', require('./controller/userController'));
 app.use('/service', require('./controller/serviceController'));
 app.use('/requested-service', require('./controller/requestedServiceController'));
+app.use('/user-role', require('./controller/userRoleController'));

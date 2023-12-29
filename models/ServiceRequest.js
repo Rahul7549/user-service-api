@@ -3,6 +3,7 @@ const sequelize = require('../dbConfigration');
 const User = require('./User');
 const Service = require('./Service');
 const ServiceRequest = sequelize.define('ServiceRequest', {
+
   title: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -16,7 +17,7 @@ const ServiceRequest = sequelize.define('ServiceRequest', {
     allowNull: false,
   },
   UserId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull:false,
     primaryKey:true,
     references: {
@@ -25,7 +26,7 @@ const ServiceRequest = sequelize.define('ServiceRequest', {
     }
   },
   availableServiceId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     allowNull:false,
     primaryKey:true,
     references: {
